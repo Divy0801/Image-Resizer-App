@@ -1,21 +1,36 @@
-* {
-  font-family: Arial, Helvetica, sans-serif;
+body {
+  background-color: #f4f4f9;
+  font-family: 'Arial', sans-serif;
 }
 
-html, body {
-  margin: 0;
-  border: 0;
-  padding: 0;
-  background-color: #fff;
+.container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-main {
-  margin: auto;
-  width: 50%;
-  padding: 20px;
+.upload-section input[type="file"] {
+  max-width: 400px;
+  margin-bottom: 20px;
 }
 
-main > h1 {
-  text-align: center;
-  font-size: 3.5em;
+.upload-section button {
+  width: 200px;
+}
+
+.output-section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 1.5rem;
 }
