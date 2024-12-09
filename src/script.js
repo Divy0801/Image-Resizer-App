@@ -27,6 +27,9 @@ uploadButton.addEventListener('click', function() {
                 const resizedDataUrl = canvas.toDataURL();
                 resizedImage.src = resizedDataUrl;
                 resizedImage.style.display = 'block';
+                downloadLink.href = resizedDataUrl;  // Set the link to the resized image's Data URL
+                downloadLink.style.display = 'inline-block';  // Show the download link
+
             };
         };
         
