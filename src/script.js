@@ -1,40 +1,66 @@
-// Get the file input and button elements
+// Include Azure Blob Storage SDK
+const { BlobServiceClient } = require('@azure/storage-blob');
+
+// Blob Storage setup
+const storageConnectionString = "<YOUR_STORAGE_CONNECTION_STRING>";
+const originalContainerName = "original-images";
+const resizedContainerName = "resized-images";
+
+const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
+const originalContainerClient = blobServiceClient.getContainerClient(originalContainerName);
+
+// HTML element references
 const imageInput = document.getElementById('imageInput');
 const uploadButton = document.getElementById('uploadButton');
 const resizedImage = document.getElementById('resizedImage');
+const downloadLink = document.getElementById('downloadLink');
 
-// Function to handle the image upload
-uploadButton.addEventListener('click', function() {
-    const file = imageInput.files[0];
-    
-    if (file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const image = new Image();
-            image.src = e.target.result;
-            
-            image.onload = function() {
-                // Resizing the image (for example, to 300px width)
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const scaleFactor = 300 / image.width;
-                canvas.width = 300;
-                canvas.height = image.height * scaleFactor;
-                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-                
-                // Convert the resized canvas to an image and display it
-                const resizedDataUrl = canvas.toDataURL();
-                resizedImage.src = resizedDataUrl;
-                resizedImage.style.display = 'block';
-                downloadLink.href = resizedDataUrl;  // Set the link to the resized image's Data URL
-                downloadLink.style.display = 'inline-block';  // Show the download link
+// Function to upload image to Azure Blob Storage
+async function uploadToBlob(file) {
+    const blobName = file.name; // Use file name or generate unique name
+    const blockBlobClient = originalContainerClient.getBlockBlobClient(blobName);
 
-            };
-        };
-        
-        reader.readAsDataURL(file);
-    } else {
-        alert('Please select an image first.');
+    try {
+        // Upload the file to the "original-images" container
+        await blockBlobClient.uploadBrowserData(file, {
+            blobHTTPHeaders: { blobContentType: file.type },
+        });
+        console.log(`File uploaded successfully: ${blobName}`);
+        return blobName; // Return the name of the uploaded file
+    } catch (err) {
+        console.error('Error uploading file to Blob Storage:', err);
+        alert('Failed to upload file. Please try again.');
+        return null;
     }
+}
+
+// Function to get the URL of a blob in the resized-images container
+function getResizedImageUrl(imageName) {
+    return `https://${blobServiceClient.accountName}.blob.core.windows.net/${resizedContainerName}/${imageName}`;
+}
+
+// Main function to handle file upload and image processing
+uploadButton.addEventListener('click', async function () {
+    const file = imageInput.files[0]; // Get the selected file
+
+    if (!file) {
+        alert('Please select an image first.');
+        return;
+    }
+
+    // Step 1: Upload the file to Azure Blob Storage
+    const blobName = await uploadToBlob(file);
+    if (!blobName) return;
+
+    // Step 2: Derive the name of the resized image
+    const resizedImageName = `resized-${blobName}`;
+
+    // Step 3: Get the URL of the resized image
+    const resizedUrl = getResizedImageUrl(resizedImageName);
+
+    // Step 4: Display the resized image and enable the download link
+    resizedImage.src = resizedUrl;
+    resizedImage.style.display = 'block'; // Show the image
+    downloadLink.href = resizedUrl;
+    downloadLink.style.display = 'inline-block'; // Show the download button
 });
