@@ -1,66 +1,75 @@
-// Include Azure Blob Storage SDK
-const { BlobServiceClient } = require('@azure/storage-blob');
+document.addEventListener("DOMContentLoaded", () => {
+    // Define Azure Blob Storage SAS URL
+    const sasUrl = "https://imgorg23.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T01:15:10Z&st=2024-12-12T17:15:10Z&spr=https&sig=KTfCgJnkuGupVPFmEQsnsvMSANxlEHN4ztyw0ShMREY%3D"; // Replace with your generated SAS URL
+    const resizedImageBaseUrl = "https://imgrsz233.blob.core.windows.net/;QueueEndpoint=https://imgrsz233.queue.core.windows.net/;FileEndpoint=https://imgrsz233.file.core.windows.net/;TableEndpoint=https://imgrsz233.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T01:27:16Z&st=2024-12-12T17:27:16Z&spr=https&sig=DHj4TsUZQ4cTHXPvLh0IarMkH76Km3h5R8gbJRSlIHM%3D"; // Replace with your resized container's base URL
 
-// Blob Storage setup
-const storageConnectionString = "https://imgorg23.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T00:59:19Z&st=2024-12-12T16:59:19Z&spr=https&sig=JKq%2B1zAfDsu2h52wxZ93JtKZykxoyJZUWe9zpiiJAKE%3D";
-const originalContainerName = "imgorz23";
-const resizedContainerName = "imgrsz23";
+    // Function to upload the image to Blob Storage
+    const uploadToBlobStorage = async (file) => {
+        const blobName = file.name; // Use the file's name for storage
 
-const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
-const originalContainerClient = blobServiceClient.getContainerClient(originalContainerName);
+        try {
+            // Upload the image to Blob Storage
+            const response = await fetch(`${sasUrl}/${blobName}`, {
+                method: "PUT",
+                headers: {
+                    "x-ms-blob-type": "BlockBlob",
+                },
+                body: file,
+            });
 
-// HTML element references
-const imageInput = document.getElementById('imageInput');
-const uploadButton = document.getElementById('uploadButton');
-const resizedImage = document.getElementById('resizedImage');
-const downloadLink = document.getElementById('downloadLink');
+            if (response.ok) {
+                console.log(`Image uploaded successfully: ${blobName}`);
+                alert("Image uploaded successfully!");
+                showUploadedPreview(file);
+                await displayResizedImage(blobName); // Fetch and display resized image
+            } else {
+                console.error("Error uploading image:", response.statusText);
+                alert("Failed to upload image!");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while uploading the image.");
+        }
+    };
 
-// Function to upload image to Azure Blob Storage
-async function uploadToBlob(file) {
-    const blobName = file.name; // Use file name or generate unique name
-    const blockBlobClient = originalContainerClient.getBlockBlobClient(blobName);
+    // Function to preview the uploaded image
+    const showUploadedPreview = (file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const uploadedPreview = document.getElementById("uploadedImagePreview");
+            uploadedPreview.src = e.target.result;
+            uploadedPreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    };
 
-    try {
-        // Upload the file to the "original-images" container
-        await blockBlobClient.uploadBrowserData(file, {
-            blobHTTPHeaders: { blobContentType: file.type },
-        });
-        console.log(`File uploaded successfully: ${blobName}`);
-        return blobName; // Return the name of the uploaded file
-    } catch (err) {
-        console.error('Error uploading file to Blob Storage:', err);
-        alert('Failed to upload file. Please try again.');
-        return null;
-    }
-}
+    // Function to fetch and display the resized image
+    const displayResizedImage = async (blobName) => {
+        const resizedImageUrl = `${resizedImageBaseUrl}/resized-${blobName}`; // Construct the URL
 
-// Function to get the URL of a blob in the resized-images container
-function getResizedImageUrl(imageName) {
-    return `https://${blobServiceClient.accountName}.blob.core.windows.net/${resizedContainerName}/${imageName}`;
-}
+        // Verify if the resized image exists
+        try {
+            const response = await fetch(resizedImageUrl);
+            if (response.ok) {
+                const resizedImagePreview = document.getElementById("resizedImagePreview");
+                resizedImagePreview.src = resizedImageUrl;
+                resizedImagePreview.style.display = "block";
+                console.log("Resized image fetched successfully.");
+            } else {
+                console.warn("Resized image not found yet. Please wait...");
+                alert("The resized image is not ready yet. Please try again later.");
+            }
+        } catch (error) {
+            console.error("Error fetching resized image:", error);
+        }
+    };
 
-// Main function to handle file upload and image processing
-uploadButton.addEventListener('click', async function () {
-    const file = imageInput.files[0]; // Get the selected file
-
-    if (!file) {
-        alert('Please select an image first.');
-        return;
-    }
-
-    // Step 1: Upload the file to Azure Blob Storage
-    const blobName = await uploadToBlob(file);
-    if (!blobName) return;
-
-    // Step 2: Derive the name of the resized image
-    const resizedImageName = `resized-${blobName}`;
-
-    // Step 3: Get the URL of the resized image
-    const resizedUrl = getResizedImageUrl(resizedImageName);
-
-    // Step 4: Display the resized image and enable the download link
-    resizedImage.src = resizedUrl;
-    resizedImage.style.display = 'block'; // Show the image
-    downloadLink.href = resizedUrl;
-    downloadLink.style.display = 'inline-block'; // Show the download button
+    // Attach the upload functionality to the file input
+    const fileInput = document.getElementById("fileInput");
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            uploadToBlobStorage(file);
+        }
+    });
 });
