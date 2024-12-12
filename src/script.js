@@ -2,9 +2,9 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
 
 // Blob Storage setup
-const storageConnectionString = "<YOUR_STORAGE_CONNECTION_STRING>";
-const originalContainerName = "original-images";
-const resizedContainerName = "resized-images";
+const storageConnectionString = "https://imgorg23.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T00:59:19Z&st=2024-12-12T16:59:19Z&spr=https&sig=JKq%2B1zAfDsu2h52wxZ93JtKZykxoyJZUWe9zpiiJAKE%3D";
+const originalContainerName = "imgorz23";
+const resizedContainerName = "imgrsz23";
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
 const originalContainerClient = blobServiceClient.getContainerClient(originalContainerName);
