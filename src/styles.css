@@ -1,36 +1,17 @@
 body {
-  background-color: #f4f4f9;
-  font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
 }
-
 .container {
-  background-color: white;
-  border-radius: 10px;
-  padding: 40px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+h2, h3 {
+    color: #343a40;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ced4da;
+    border-radius: 10px;
 }
 
-.upload-section input[type="file"] {
-  max-width: 400px;
-  margin-bottom: 20px;
-}
-
-.upload-section button {
-  width: 200px;
-}
-
-.output-section img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-
-h4 {
-  font-size: 1.5rem;
-}
