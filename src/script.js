@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to upload the image to Blob Storage
     const uploadToBlobStorage = async (file) => {
-        const blobName = 'imgorz23'; // Use the file's name for storage
+        const blobName = "imgorz23"; // Use the file's name for storage
 
         try {
             // Upload the image to Blob Storage
