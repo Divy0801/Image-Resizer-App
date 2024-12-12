@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Define Azure Blob Storage SAS URL
     const sasUrl = "https://imgorg23.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T01:15:10Z&st=2024-12-12T17:15:10Z&spr=https&sig=KTfCgJnkuGupVPFmEQsnsvMSANxlEHN4ztyw0ShMREY%3D"; // Replace with your generated SAS URL
-    const resizedImageBaseUrl = "https://imgrsz233.blob.core.windows.net/;QueueEndpoint=https://imgrsz233.queue.core.windows.net/;FileEndpoint=https://imgrsz233.file.core.windows.net/;TableEndpoint=https://imgrsz233.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=o&sp=rwdlacupiytfx&se=2024-12-13T01:27:16Z&st=2024-12-12T17:27:16Z&spr=https&sig=DHj4TsUZQ4cTHXPvLh0IarMkH76Km3h5R8gbJRSlIHM%3D"; // Replace with your resized container's base URL
+    const resizedImageBaseUrl = "https://imgrsz233.blob.core.windows.net/imgrsz23/";
 
     // Function to upload the image to Blob Storage
     const uploadToBlobStorage = async (file) => {
