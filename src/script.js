@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const sasUrl = "https://images23f2.blob.core.windows.net/orgimages?sp=r&st=2024-12-14T18:35:01Z&se=2024-12-15T02:35:01Z&spr=https&sv=2022-11-02&sr=c&sig=MT9AcS0byLHbXZ%2B7rU8w8lIduednY%2BiP8Ot2I0mn15E%3D";
-    const resizedImageBaseUrl = "https://<your-storage-account-name>.blob.core.windows.net/<resized-container-name>";
+    const sasUrl = "https://images23f2.blob.core.windows.net/orgimages?sv=2022-11-02&ss=b&srt=co&sp=rwaciytf&se=2024-12-15T02:39:50Z&st=2024-12-14T18:39:50Z&spr=https&sig=X50U5wT29mURaw5qMUWHpVXYNinFE3ZncWBbnQn5BCw%3D";
+    const resizedImageBaseUrl = "https://images23f2.blob.core.windows.net/rszimages";
 
     const uploadToBlobStorage = async (file) => {
         const blobName = file.name;
