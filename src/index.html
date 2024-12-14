@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Azure</title>
+    <title>Azure Image Uploader</title>
 </head>
 <body>
-    <button id = "select-button">Select Files</button>
-    <input type = "file" id = "file-input" multiple style = "display : none;" />
-    <script src = "script.js"></script>
+    <h1>Upload and Resize Image</h1>
+    <p>Use the form below to upload an image to Azure Blob Storage.</p>
+    <input type="file" id="fileInput" />
+    <div>
+        <h3>Uploaded Image Preview:</h3>
+        <img id="uploadedImagePreview" style="display: none;" />
+    </div>
+    <div>
+        <h3>Resized Image Preview:</h3>
+        <img id="resizedImagePreview" style="display: none;" />
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
-
