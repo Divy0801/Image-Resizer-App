@@ -1,32 +1,64 @@
-import 'regenerator-runtime/runtime'
-const { BlobServiceClient } = require("@azure/storage-blob");
+document.addEventListener("DOMContentLoaded", () => {
+    const sasUrl = "https://images23f2.blob.core.windows.net/orgimages?sp=r&st=2024-12-14T18:35:01Z&se=2024-12-15T02:35:01Z&spr=https&sv=2022-11-02&sr=c&sig=MT9AcS0byLHbXZ%2B7rU8w8lIduednY%2BiP8Ot2I0mn15E%3D";
+    const resizedImageBaseUrl = "https://<your-storage-account-name>.blob.core.windows.net/<resized-container-name>";
 
-const selectButton = document.getElementById("select-button");
-const fileInput = document.getElementById("file-input");
+    const uploadToBlobStorage = async (file) => {
+        const blobName = file.name;
 
-const blobSasUrl = "https://images23f2.blob.core.windows.net/?sv=2022-11-02&ss=b&srt=co&sp=rwiytf&se=2024-12-15T01:49:41Z&st=2024-12-14T17:49:41Z&spr=https&sig=PqYHeO2ysqHGIybNVttrzzxqzC6AvCfFWzOv0P%2BI6KY%3D"
-const blobServiceClient = new BlobServiceClient(blobSasUrl); 
-const containerName = "orgimages";
-const containerClient = blobServiceClient.getContainerClient(containerName);
+        try {
+            const response = await fetch(`${sasUrl}/${blobName}`, {
+                method: "PUT",
+                headers: {
+                    "x-ms-blob-type": "BlockBlob",
+                },
+                body: file,
+            });
 
-const uploadFiles = async () => {
+            if (response.ok) {
+                alert("Image uploaded successfully!");
+                showUploadedPreview(file);
+                await displayResizedImage(blobName);
+            } else {
+                alert("Failed to upload image.");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("An error occurred during upload.");
+        }
+    };
 
-   try {
-       const promises = [];
-       for (const file of fileInput.files){
-	const blockBlobClient = containerClient.getBlockBlobClient(file.name);
-        promises.push(blockBlobClient.uploadBrowserData(file));
-	} 	  
-        await Promise.all(promises);
-        alert('Done.');
-       }
-   catch (error) {
-            alert(error.message);
-                 }
+    const showUploadedPreview = (file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.getElementById("uploadedImagePreview");
+            img.src = e.target.result;
+            img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    };
 
-}
+    const displayResizedImage = async (blobName) => {
+        const resizedImageUrl = `${resizedImageBaseUrl}/resized-${blobName}`;
 
+        try {
+            const response = await fetch(resizedImageUrl);
+            if (response.ok) {
+                const img = document.getElementById("resizedImagePreview");
+                img.src = resizedImageUrl;
+                img.style.display = "block";
+            } else {
+                alert("Resized image not ready yet.");
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+        }
+    };
 
-selectButton.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", uploadFiles);
-
+    const fileInput = document.getElementById("fileInput");
+    fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            uploadToBlobStorage(file);
+        }
+    });
+});
