@@ -16,5 +16,13 @@
   ],
   "dependencies": {
     "@azure/storage-blob": "^12.26.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Divy0801/Image-Resizer-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Divy0801/Image-Resizer-App/issues"
+  },
+  "homepage": "https://github.com/Divy0801/Image-Resizer-App#readme"
 }
