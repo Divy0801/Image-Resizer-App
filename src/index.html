@@ -4,9 +4,11 @@
     <title>Azure</title>
 </head>
 <body>
-    <button id = "select-button">Select Files</button>
-    <input type = "file" id = "file-input" multiple style = "display : none;" />
-    <script src = "index.js"></script>
+    <form method = "post" action="https://reciever23.azurewebsites.net/api/reciever?" enctype = "multipart/form-data"/>
+    <label for = "myfile"> Select a File: </label>
+    <input type = "file" id = "myfile" name = "filename">
+    <input type = "submit">
+    </form>
 </body>
 </html>
 
